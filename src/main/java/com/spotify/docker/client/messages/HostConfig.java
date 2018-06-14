@@ -1,427 +1,487 @@
-/*-
- * -\-\-
- * docker-client
- * --
- * Copyright (C) 2016 Spotify AB
- * --
+/*
+ * Copyright (c) 2014 Spotify AB.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * -/-/-
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package com.spotify.docker.client.messages;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Strings.isNullOrEmpty;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
-import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-import javax.annotation.Nullable;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
-@AutoValue
 @JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, setterVisibility = NONE)
-public abstract class HostConfig {
+public class HostConfig {
 
-  @Nullable
-  @JsonProperty("Binds")
-  public abstract ImmutableList<String> binds();
-
-  @Nullable
-  @JsonProperty("BlkioWeight")
-  public abstract Integer blkioWeight();
-
-  @Nullable
-  @JsonProperty("BlkioWeightDevice")
-  public abstract ImmutableList<BlkioWeightDevice> blkioWeightDevice();
-
-  @Nullable
-  @JsonProperty("BlkioDeviceReadBps")
-  public abstract ImmutableList<BlkioDeviceRate> blkioDeviceReadBps();
-
-  @Nullable
-  @JsonProperty("BlkioDeviceWriteBps")
-  public abstract ImmutableList<BlkioDeviceRate> blkioDeviceWriteBps();
-
-  @Nullable
-  @JsonProperty("BlkioDeviceReadIOps")
-  public abstract ImmutableList<BlkioDeviceRate> blkioDeviceReadIOps();
-
-  @Nullable
-  @JsonProperty("BlkioDeviceWriteIOps")
-  public abstract ImmutableList<BlkioDeviceRate> blkioDeviceWriteIOps();
-
-  @Nullable
-  @JsonProperty("ContainerIDFile")
-  public abstract String containerIdFile();
-
-  @Nullable
-  @JsonProperty("LxcConf")
-  public abstract ImmutableList<LxcConfParameter> lxcConf();
-
-  @Nullable
-  @JsonProperty("Privileged")
-  public abstract Boolean privileged();
-
-  @Nullable
-  @JsonProperty("PortBindings")
-  public abstract ImmutableMap<String, List<PortBinding>> portBindings();
-
-  @Nullable
-  @JsonProperty("Links")
-  public abstract ImmutableList<String> links();
-
-  @Nullable
-  @JsonProperty("PublishAllPorts")
-  public abstract Boolean publishAllPorts();
-
-  @Nullable
-  @JsonProperty("Dns")
-  public abstract ImmutableList<String> dns();
-
-  @Nullable
-  @JsonProperty("DnsOptions")
-  public abstract ImmutableList<String> dnsOptions();
-
-  @Nullable
-  @JsonProperty("DnsSearch")
-  public abstract ImmutableList<String> dnsSearch();
-
-  @Nullable
-  @JsonProperty("ExtraHosts")
-  public abstract ImmutableList<String> extraHosts();
-
-  @Nullable
-  @JsonProperty("VolumesFrom")
-  public abstract ImmutableList<String> volumesFrom();
-
-  @Nullable
-  @JsonProperty("CapAdd")
-  public abstract ImmutableList<String> capAdd();
-
-  @Nullable
-  @JsonProperty("CapDrop")
-  public abstract ImmutableList<String> capDrop();
-
-  @Nullable
-  @JsonProperty("NetworkMode")
-  public abstract String networkMode();
-
-  @Nullable
-  @JsonProperty("SecurityOpt")
-  public abstract ImmutableList<String> securityOpt();
-
-  @Nullable
-  @JsonProperty("Devices")
-  public abstract ImmutableList<Device> devices();
-
-  @Nullable
-  @JsonProperty("Memory")
-  public abstract Long memory();
-
-  @Nullable
-  @JsonProperty("MemorySwap")
-  public abstract Long memorySwap();
-
-  @Nullable
-  @JsonProperty("MemorySwappiness")
-  public abstract Integer memorySwappiness();
-
-  @Nullable
-  @JsonProperty("MemoryReservation")
-  public abstract Long memoryReservation();
-
-  @Nullable
-  @JsonProperty("NanoCpus")
-  public abstract Long nanoCpus();
-
-  @Nullable
-  @JsonProperty("CpuPeriod")
-  public abstract Long cpuPeriod();
-
-  @Nullable
-  @JsonProperty("CpuShares")
-  public abstract Long cpuShares();
-
-  @Nullable
-  @JsonProperty("CpusetCpus")
-  public abstract String cpusetCpus();
-
-  @Nullable
-  @JsonProperty("CpusetMems")
-  public abstract String cpusetMems();
-
-  @Nullable
-  @JsonProperty("CpuQuota")
-  public abstract Long cpuQuota();
-
-  @Nullable
-  @JsonProperty("CgroupParent")
-  public abstract String cgroupParent();
-
-  @Nullable
-  @JsonProperty("RestartPolicy")
-  public abstract RestartPolicy restartPolicy();
-
-  @Nullable
-  @JsonProperty("LogConfig")
-  public abstract LogConfig logConfig();
-
-  @Nullable
-  @JsonProperty("IpcMode")
-  public abstract String ipcMode();
-
-  @Nullable
+  @JsonProperty("Binds") private ImmutableList<String> binds;
+  @JsonProperty("ContainerIDFile") private String containerIDFile;
+  @JsonProperty("LxcConf") private ImmutableList<LxcConfParameter> lxcConf;
+  @JsonProperty("Privileged") private Boolean privileged;
+  @JsonProperty("PortBindings") private Map<String, List<PortBinding>> portBindings;
+  @JsonProperty("Links") private ImmutableList<String> links;
+  @JsonProperty("PublishAllPorts") private Boolean publishAllPorts;
+  @JsonProperty("Dns") private ImmutableList<String> dns;
+  @JsonProperty("DnsSearch") private ImmutableList<String> dnsSearch;
+  @JsonProperty("ExtraHosts") private ImmutableList<String> extraHosts;
+  @JsonProperty("VolumesFrom") private ImmutableList<String> volumesFrom;
+  @JsonProperty("CapAdd") private ImmutableList<String> capAdd;
+  @JsonProperty("CapDrop") private ImmutableList<String> capDrop;
+  @JsonProperty("NetworkMode") private String networkMode;
+  @JsonProperty("SecurityOpt") private ImmutableList<String> securityOpt;
+  @JsonProperty("Devices") private ImmutableList<Device> devices;
+  @JsonProperty("Memory") private Long memory;
+  @JsonProperty("MemorySwap") private Long memorySwap;
+  @JsonProperty("CpuShares") private Long cpuShares;
+  @JsonProperty("CpusetCpus") private String cpusetCpus;
+  @JsonProperty("CpuQuota") private Long cpuQuota;
+  @JsonProperty("CgroupParent") private String cgroupParent;
+  @JsonProperty("RestartPolicy") private RestartPolicy restartPolicy;
+  @JsonProperty("LogConfig") private LogConfig logConfig;
+  @JsonProperty("IpcMode") private String ipcMode;
+  // tacked on ulimit builder to support new-er docker host configs
   @JsonProperty("Ulimits")
-  public abstract ImmutableList<Ulimit> ulimits();
+  private ImmutableList<Ulimit> ulimits;
 
-  @Nullable
-  @JsonProperty("PidMode")
-  public abstract String pidMode();
-
-  @Nullable
-  @JsonProperty("ShmSize")
-  public abstract Long shmSize();
-
-  @Nullable
-  @JsonProperty("OomKillDisable")
-  public abstract Boolean oomKillDisable();
-
-  @Nullable
-  @JsonProperty("OomScoreAdj")
-  public abstract Integer oomScoreAdj();
-
-  @Nullable
-  @JsonProperty("AutoRemove")
-  public abstract Boolean autoRemove();
-
-  /**
-   * Tune container pids limit (set -1 for unlimited).
-   * Only works for kernels &gt;= 4.3
-   * @return An integer indicating the pids limit.
-   */
-  @Nullable
-  @JsonProperty("PidsLimit")
-  public abstract Integer pidsLimit();
-
-  @Nullable
-  @JsonProperty("Tmpfs")
-  public abstract ImmutableMap<String, String> tmpfs();
-
-  @Nullable
-  @JsonProperty("ReadonlyRootfs")
-  public abstract Boolean readonlyRootfs();
-  
-  @Nullable
-  @JsonProperty("StorageOpt")
-  public abstract ImmutableMap<String, String> storageOpt();
-
-  @JsonCreator
-  static HostConfig create(
-      @JsonProperty("Binds") final List<String> binds,
-      @JsonProperty("BlkioWeight") final Integer blkioWeight,
-      @JsonProperty("BlkioWeightDevice") final List<BlkioWeightDevice> blkioWeightDevice,
-      @JsonProperty("BlkioDeviceReadBps") final List<BlkioDeviceRate> blkioDeviceReadBps,
-      @JsonProperty("BlkioDeviceWriteBps") final List<BlkioDeviceRate> blkioDeviceWriteBps,
-      @JsonProperty("BlkioDeviceReadIOps") final List<BlkioDeviceRate> blkioDeviceReadIOps,
-      @JsonProperty("BlkioDeviceWriteIOps") final List<BlkioDeviceRate> blkioDeviceWriteIOps,
-      @JsonProperty("ContainerIDFile") final String containerIdFile,
-      @JsonProperty("LxcConf") final List<LxcConfParameter> lxcConf,
-      @JsonProperty("Privileged") final Boolean privileged,
-      @JsonProperty("PortBindings") final Map<String, List<PortBinding>> portBindings,
-      @JsonProperty("Links") final List<String> links,
-      @JsonProperty("PublishAllPorts") final Boolean publishAllPorts,
-      @JsonProperty("Dns") final List<String> dns,
-      @JsonProperty("DnsOptions") final List<String> dnsOptions,
-      @JsonProperty("DnsSearch") final List<String> dnsSearch,
-      @JsonProperty("ExtraHosts") final List<String> extraHosts,
-      @JsonProperty("VolumesFrom") final List<String> volumesFrom,
-      @JsonProperty("CapAdd") final List<String> capAdd,
-      @JsonProperty("CapDrop") final List<String> capDrop,
-      @JsonProperty("NetworkMode") final String networkMode,
-      @JsonProperty("SecurityOpt") final List<String> securityOpt,
-      @JsonProperty("Devices") final List<Device> devices,
-      @JsonProperty("Memory") final Long memory,
-      @JsonProperty("MemorySwap") final Long memorySwap,
-      @JsonProperty("MemorySwappiness") final Integer memorySwappiness,
-      @JsonProperty("MemoryReservation") final Long memoryReservation,
-      @JsonProperty("NanoCpus") final Long nanoCpus,
-      @JsonProperty("CpuPeriod") final Long cpuPeriod,
-      @JsonProperty("CpuShares") final Long cpuShares,
-      @JsonProperty("CpusetCpus") final String cpusetCpus,
-      @JsonProperty("CpusetMems") final String cpusetMems,
-      @JsonProperty("CpuQuota") final Long cpuQuota,
-      @JsonProperty("CgroupParent") final String cgroupParent,
-      @JsonProperty("RestartPolicy") final RestartPolicy restartPolicy,
-      @JsonProperty("LogConfig") final LogConfig logConfig,
-      @JsonProperty("IpcMode") final String ipcMode,
-      @JsonProperty("Ulimits") final List<Ulimit> ulimits,
-      @JsonProperty("PidMode") final String pidMode,
-      @JsonProperty("ShmSize") final Long shmSize,
-      @JsonProperty("OomKillDisable") final Boolean oomKillDisable,
-      @JsonProperty("OomScoreAdj") final Integer oomScoreAdj,
-      @JsonProperty("AutoRemove") final Boolean autoRemove,
-      @JsonProperty("PidsLimit") final Integer pidsLimit,
-      @JsonProperty("Tmpfs") final Map<String, String> tmpfs,
-      @JsonProperty("ReadonlyRootfs") final Boolean readonlyRootfs,
-      @JsonProperty("StorageOpt") final Map<String, String> storageOpt) {
-    return builder()
-        .binds(binds)
-        .blkioWeight(blkioWeight)
-        .blkioWeightDevice(blkioWeightDevice)
-        .blkioDeviceReadBps(blkioDeviceReadBps)
-        .blkioDeviceWriteBps(blkioDeviceWriteBps)
-        .blkioDeviceReadIOps(blkioDeviceReadIOps)
-        .blkioDeviceWriteIOps(blkioDeviceWriteIOps)
-        .containerIdFile(containerIdFile)
-        .lxcConf(lxcConf)
-        .privileged(privileged)
-        .portBindings(portBindings)
-        .links(links)
-        .publishAllPorts(publishAllPorts)
-        .dns(dns)
-        .dnsOptions(dnsOptions)
-        .dnsSearch(dnsSearch)
-        .extraHosts(extraHosts)
-        .volumesFrom(volumesFrom)
-        .capAdd(capAdd)
-        .capDrop(capDrop)
-        .networkMode(networkMode)
-        .securityOpt(securityOpt)
-        .devices(devices)
-        .memory(memory)
-        .memorySwap(memorySwap)
-        .memorySwappiness(memorySwappiness)
-        .memoryReservation(memoryReservation)
-        .nanoCpus(nanoCpus)
-        .cpuPeriod(cpuPeriod)
-        .cpuShares(cpuShares)
-        .cpusetCpus(cpusetCpus)
-        .cpusetMems(cpusetMems)
-        .cpuQuota(cpuQuota)
-        .cgroupParent(cgroupParent)
-        .restartPolicy(restartPolicy)
-        .logConfig(logConfig)
-        .ipcMode(ipcMode)
-        .ulimits(ulimits)
-        .pidMode(pidMode)
-        .shmSize(shmSize)
-        .oomKillDisable(oomKillDisable)
-        .oomScoreAdj(oomScoreAdj)
-        .autoRemove(autoRemove)
-        .pidsLimit(pidsLimit)
-        .tmpfs(tmpfs)
-        .readonlyRootfs(readonlyRootfs)
-        .storageOpt(storageOpt)
-        .build();
+  private HostConfig() {
   }
 
-  @AutoValue
-  public abstract static class LxcConfParameter {
+  private HostConfig(final Builder builder) {
+    this.binds = builder.binds;
+    this.containerIDFile = builder.containerIDFile;
+    this.lxcConf = builder.lxcConf;
+    this.privileged = builder.privileged;
+    this.portBindings = builder.portBindings;
+    this.links = builder.links;
+    this.publishAllPorts = builder.publishAllPorts;
+    this.dns = builder.dns;
+    this.dnsSearch = builder.dnsSearch;
+    this.extraHosts = builder.extraHosts;
+    this.volumesFrom = builder.volumesFrom;
+    this.capAdd = builder.capAdd;
+    this.capDrop = builder.capDrop;
+    this.networkMode = builder.networkMode;
+    this.securityOpt = builder.securityOpt;
+    this.devices = builder.devices;
+    this.memory = builder.memory;
+    this.memorySwap = builder.memorySwap;
+    this.cpuShares = builder.cpuShares;
+    this.cpusetCpus = builder.cpusetCpus;
+    this.cpuQuota = builder.cpuQuota;
+    this.cgroupParent = builder.cgroupParent;
+    this.restartPolicy = builder.restartPolicy;
+    this.logConfig = builder.logConfig;
+    this.ipcMode = builder.ipcMode;
+    this.ulimits = builder.ulimits;
+  }
 
-    @JsonProperty("Key")
-    public abstract String key();
+  public List<String> binds() {
+    return binds;
+  }
 
-    @JsonProperty("Value")
-    public abstract String value();
+  public String containerIDFile() {
+    return containerIDFile;
+  }
 
-    @JsonCreator
-    static LxcConfParameter create(
-        @JsonProperty("Key") final String key,
-        @JsonProperty("Value") final String value) {
-      return new AutoValue_HostConfig_LxcConfParameter(key, value);
+  public List<LxcConfParameter> lxcConf() {
+    return lxcConf;
+  }
+
+  public Boolean privileged() {
+    return privileged;
+  }
+
+  public Map<String, List<PortBinding>> portBindings() {
+    return (portBindings == null) ? null : Collections.unmodifiableMap(portBindings);
+  }
+
+  public List<String> links() {
+    return links;
+  }
+
+  public Boolean publishAllPorts() {
+    return publishAllPorts;
+  }
+
+  public List<String> dns() {
+    return dns;
+  }
+
+  public List<String> dnsSearch() {
+    return dnsSearch;
+  }
+
+  public List<String> extraHosts() {
+    return extraHosts;
+  }
+
+  public List<String> volumesFrom() {
+    return volumesFrom;
+  }
+
+  public List<String> capAdd() {
+    return capAdd;
+  }
+
+  public List<String> capDrop() {
+    return capDrop;
+  }
+
+  public String networkMode() {
+    return networkMode;
+  }
+
+  public List<String> securityOpt() {
+    return securityOpt;
+  }
+
+  public List<Device> devices() {
+    return devices;
+  }
+
+  public Long memory() {
+    return memory;
+  }
+
+  public Long memorySwap() {
+    return memorySwap;
+  }
+
+  public Long cpuShares() {
+    return cpuShares;
+  }
+
+  public String cpusetCpus() {
+    return cpusetCpus;
+  }
+
+  public Long cpuQuota() {
+    return cpuQuota;
+  }
+
+  public String cgroupParent() {
+    return cgroupParent;
+  }
+
+  public RestartPolicy restartPolicy() {
+    return restartPolicy;
+  }
+
+  public LogConfig logConfig() {
+    return logConfig;
+  }
+
+  public String ipcMode() {
+    return ipcMode;
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    final HostConfig that = (HostConfig) o;
+
+    return Objects.equals(this.binds, that.binds) &&
+        Objects.equals(this.containerIDFile, that.containerIDFile) &&
+        Objects.equals(this.lxcConf, that.lxcConf) &&
+        Objects.equals(this.privileged, that.privileged) &&
+        Objects.equals(this.portBindings, that.portBindings) &&
+        Objects.equals(this.links, that.links) &&
+        Objects.equals(this.publishAllPorts, that.publishAllPorts) &&
+        Objects.equals(this.dns, that.dns) &&
+        Objects.equals(this.dnsSearch, that.dnsSearch) &&
+        Objects.equals(this.extraHosts, that.extraHosts) &&
+        Objects.equals(this.volumesFrom, that.volumesFrom) &&
+        Objects.equals(this.capAdd, that.capAdd) &&
+        Objects.equals(this.capDrop, that.capDrop) &&
+        Objects.equals(this.networkMode, that.networkMode) &&
+        Objects.equals(this.securityOpt, that.securityOpt) &&
+        Objects.equals(this.devices, that.devices) &&
+        Objects.equals(this.memory, that.memory) &&
+        Objects.equals(this.memorySwap, that.memorySwap) &&
+        Objects.equals(this.cpuShares, that.cpuShares) &&
+        Objects.equals(this.cpusetCpus, that.cpusetCpus) &&
+        Objects.equals(this.cpuQuota, that.cpuQuota) &&
+        Objects.equals(this.cgroupParent, that.cgroupParent) &&
+        Objects.equals(this.restartPolicy, that.restartPolicy) &&
+        Objects.equals(this.logConfig, that.logConfig) &&
+        Objects.equals(this.ipcMode, that.ipcMode);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(binds, containerIDFile, lxcConf, privileged, portBindings, links,
+                        publishAllPorts, dns, dnsSearch, extraHosts, volumesFrom, capAdd,
+                        capDrop, networkMode, securityOpt, devices, memory, memorySwap,
+                        cpuShares, cpusetCpus, cpuQuota, cgroupParent, restartPolicy, logConfig,
+                        ipcMode);
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("binds", binds)
+        .add("containerIDFile", containerIDFile)
+        .add("lxcConf", lxcConf)
+        .add("privileged", privileged)
+        .add("portBindings", portBindings)
+        .add("links", links)
+        .add("publishAllPorts", publishAllPorts)
+        .add("dns", dns)
+        .add("dnsSearch", dnsSearch)
+        .add("extraHosts", extraHosts)
+        .add("volumesFrom", volumesFrom)
+        .add("capAdd", capAdd)
+        .add("capDrop", capDrop)
+        .add("networkMode", networkMode)
+        .add("securityOpt", securityOpt)
+        .add("devices", devices)
+        .add("memory", memory)
+        .add("memorySwap", memorySwap)
+        .add("cpuShares", cpuShares)
+        .add("cpusetCpus", cpusetCpus)
+        .add("cpuQuota", cpuQuota)
+        .add("cgroupParent", cgroupParent)
+        .add("restartPolicy", restartPolicy)
+        .add("logConfig", logConfig)
+        .add("ipcMode", ipcMode)
+        .toString();
+  }
+
+  public static class LxcConfParameter {
+
+    @JsonProperty("Key") private String key;
+    @JsonProperty("Value") private String value;
+
+    public LxcConfParameter(final String key, final String value) {
+      this.key = key;
+      this.value = value;
+    }
+
+    public String key() {
+      return key;
+    }
+
+    public String value() {
+      return value;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+
+      final LxcConfParameter that = (LxcConfParameter) o;
+
+      return Objects.equals(this.key, that.key) &&
+          Objects.equals(this.value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(key, value);
+    }
+
+    @Override
+    public String toString() {
+      return MoreObjects.toStringHelper(this)
+          .add("key", key)
+          .add("value", value)
+          .toString();
     }
   }
 
-  @AutoValue
-  public abstract static class RestartPolicy {
+  public static class RestartPolicy {
 
-    @JsonProperty("Name")
-    public abstract String name();
-
-    @Nullable
-    @JsonProperty("MaximumRetryCount")
-    public abstract Integer maxRetryCount();
+    @JsonProperty("Name") private String name;
+    @JsonProperty("MaximumRetryCount") private Integer maxRetryCount;
 
     public static RestartPolicy always() {
-      return new AutoValue_HostConfig_RestartPolicy("always", null);
+      return new RestartPolicy("always", null);
     }
 
     public static RestartPolicy unlessStopped() {
-      return new AutoValue_HostConfig_RestartPolicy("unless-stopped", null);
+      return new RestartPolicy("unless-stopped", null);
     }
 
     public static RestartPolicy onFailure(Integer maxRetryCount) {
-      return new AutoValue_HostConfig_RestartPolicy("on-failure", maxRetryCount);
+      return new RestartPolicy("on-failure", maxRetryCount);
     }
 
-    @JsonCreator
-    static RestartPolicy create(
-        @JsonProperty("Name") final String name,
-        @JsonProperty("MaximumRetryCount") final Integer maxRetryCount) {
-      return new AutoValue_HostConfig_RestartPolicy(name, maxRetryCount);
+    // for mapper
+    private RestartPolicy() {
+    }
+
+    private RestartPolicy(String name, Integer maxRetryCount) {
+      this.name = name;
+      this.maxRetryCount = maxRetryCount;
+    }
+
+    public String name() {
+      return name;
+    }
+
+    public Integer maxRetryCount() {
+      return maxRetryCount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+
+      final RestartPolicy that = (RestartPolicy) o;
+
+      return Objects.equals(this.name, that.name) &&
+          Objects.equals(this.maxRetryCount, that.maxRetryCount);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(name, maxRetryCount);
+    }
+
+    @Override
+    public String toString() {
+      return MoreObjects.toStringHelper(this)
+          .add("name", name)
+          .add("maxRetryCount", maxRetryCount)
+          .toString();
     }
   }
 
-  public abstract Builder toBuilder();
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
 
   public static Builder builder() {
-    return new AutoValue_HostConfig.Builder();
+    return new Builder();
   }
 
-  @AutoValue.Builder
-  public abstract static class Builder {
+  public static class Builder {
+
+    private ImmutableList<String> binds;
+    private String containerIDFile;
+    private ImmutableList<LxcConfParameter> lxcConf;
+    private Boolean privileged;
+    private Map<String, List<PortBinding>> portBindings;
+    private ImmutableList<String> links;
+    private Boolean publishAllPorts;
+    private ImmutableList<String> dns;
+    private ImmutableList<String> dnsSearch;
+    private ImmutableList<String> extraHosts;
+    private ImmutableList<String> volumesFrom;
+    private ImmutableList<String> capAdd;
+    private ImmutableList<String> capDrop;
+    private String networkMode;
+    private ImmutableList<String> securityOpt;
+    private ImmutableList<Device> devices;
+    private ImmutableList<Ulimit> ulimits;
+    public Long memory;
+    public Long memorySwap;
+    public Long cpuShares;
+    public String cpusetCpus;
+    public Long cpuQuota;
+    public String cgroupParent;
+    public RestartPolicy restartPolicy;
+    public LogConfig logConfig;
+    public String ipcMode;
+
+
+    private Builder() {
+    }
+
+    private Builder(final HostConfig hostConfig) {
+      this.binds = hostConfig.binds;
+      this.containerIDFile = hostConfig.containerIDFile;
+      this.lxcConf = hostConfig.lxcConf;
+      this.privileged = hostConfig.privileged;
+      this.portBindings = hostConfig.portBindings;
+      this.links = hostConfig.links;
+      this.publishAllPorts = hostConfig.publishAllPorts;
+      this.dns = hostConfig.dns;
+      this.dnsSearch = hostConfig.dnsSearch;
+      this.extraHosts = hostConfig.extraHosts;
+      this.volumesFrom = hostConfig.volumesFrom;
+      this.capAdd = hostConfig.capAdd;
+      this.capDrop = hostConfig.capDrop;
+      this.networkMode = hostConfig.networkMode;
+      this.securityOpt = hostConfig.securityOpt;
+      this.devices = hostConfig.devices;
+      this.memory = hostConfig.memory;
+      this.memorySwap = hostConfig.memorySwap;
+      this.cpuShares = hostConfig.cpuShares;
+      this.cpusetCpus = hostConfig.cpusetCpus;
+      this.cpuQuota = hostConfig.cpuQuota;
+      this.cgroupParent = hostConfig.cgroupParent;
+      this.restartPolicy = hostConfig.restartPolicy;
+      this.logConfig = hostConfig.logConfig;
+      this.ipcMode = hostConfig.ipcMode;
+      this.ulimits = hostConfig.ulimits;
+    }
 
     /**
      * Set the list of binds to the parameter, replacing any existing value.
      * <p>To append to the list instead, use one of the appendBinds() methods.</p>
-     *
-     * @param binds A list of volume bindings for this container. Each volume binding is a string.
-     * @return {@link Builder}
      */
-    public abstract Builder binds(List<String> binds);
+    public Builder binds(final List<String> binds) {
+      if (binds != null && !binds.isEmpty()) {
+        this.binds = copyWithoutDuplicates(binds);
+      }
+
+      return this;
+    }
 
     /**
      * Set the list of binds to the parameter, replacing any existing value.
      * <p>To append to the list instead, use one of the appendBinds() methods.</p>
-     *
-     * @param binds An array of volume bindings for this container. Each volume binding is a
-     *              string.
-     * @return {@link Builder}
      */
-    public abstract Builder binds(String... binds);
+    public Builder binds(final String... binds) {
+      if (binds != null && binds.length > 0) {
+        return binds(Lists.newArrayList(binds));
+      }
+
+      return this;
+    }
 
     /**
      * Set the list of binds to the parameter, replacing any existing value.
      * <p>To append to the list instead, use one of the appendBinds() methods.</p>
-     *
-     * @param binds An array of volume bindings for this container. Each volume binding is a {@link
-     *              Bind} object.
-     * @return {@link Builder}
      */
     public Builder binds(final Bind... binds) {
       if (binds == null || binds.length == 0) {
@@ -431,8 +491,6 @@ public abstract class HostConfig {
       return binds(toStringList(binds));
     }
 
-    abstract ImmutableList<String> binds();
-
     private static List<String> toStringList(final Bind[] binds) {
       final List<String> bindStrings = Lists.newArrayList();
       for (final Bind bind : binds) {
@@ -441,42 +499,25 @@ public abstract class HostConfig {
       return bindStrings;
     }
 
-    /**
-     * Append binds to the existing list in this builder. Duplicates are discarded.
-     *
-     * @param newBinds An iterable of volume bindings for this container. Each volume binding is a
-     *                 String.
-     * @return {@link Builder}
-     */
+    /** Append binds to the existing list in this builder. */
     public Builder appendBinds(final Iterable<String> newBinds) {
       final List<String> list = new ArrayList<>();
-      if (binds() != null) {
-        list.addAll(binds());
+      if (this.binds != null) {
+        list.addAll(this.binds);
       }
       list.addAll(Lists.newArrayList(newBinds));
-      binds(copyWithoutDuplicates(list));
+      this.binds = copyWithoutDuplicates(list);
+
       return this;
     }
 
-    /**
-     * Append binds to the existing list in this builder.
-     *
-     * @param binds An array of volume bindings for this container. Each volume binding is a {@link
-     *              Bind} object.
-     * @return {@link Builder}
-     */
+    /** Append binds to the existing list in this builder. */
     public Builder appendBinds(final Bind... binds) {
       appendBinds(toStringList(binds));
       return this;
     }
 
-    /**
-     * Append binds to the existing list in this builder.
-     *
-     * @param binds An array of volume bindings for this container. Each volume binding is a
-     *              String.
-     * @return {@link Builder}
-     */
+    /** Append binds to the existing list in this builder. */
     public Builder appendBinds(final String... binds) {
       appendBinds(Lists.newArrayList(binds));
       return this;
@@ -492,401 +533,462 @@ public abstract class HostConfig {
       return ImmutableList.copyOf(list);
     }
 
-    public abstract Builder blkioWeight(Integer blkioWeight);
+    public List<String> binds() {
+      return binds;
+    }
 
-    public abstract Builder blkioWeightDevice(List<BlkioWeightDevice> blkioWeightDevice);
-
-    public abstract Builder blkioDeviceReadBps(List<BlkioDeviceRate> blkioDeviceReadBps);
-
-    public abstract Builder blkioDeviceWriteBps(List<BlkioDeviceRate> blkioDeviceWriteBps);
-
-    public abstract Builder blkioDeviceReadIOps(List<BlkioDeviceRate> blkioDeviceReadIOps);
-
-    public abstract Builder blkioDeviceWriteIOps(List<BlkioDeviceRate> blkioDeviceWriteIOps);
-
-    public abstract Builder containerIdFile(String containerIdFile);
-
-    public abstract Builder lxcConf(List<LxcConfParameter> lxcConf);
-
-    public abstract Builder lxcConf(LxcConfParameter... lxcConf);
-
-    public abstract Builder privileged(Boolean privileged);
-
-    public abstract Builder portBindings(Map<String, List<PortBinding>> portBindings);
-
-    public abstract Builder links(List<String> links);
-
-    public abstract Builder links(String... links);
-
-    public abstract Builder publishAllPorts(Boolean publishAllPorts);
-
-    public abstract Builder dns(List<String> dns);
-
-    public abstract Builder dns(String... dns);
-
-    public abstract Builder dnsOptions(List<String> dnsOptions);
-
-    public abstract Builder dnsOptions(String... dnsOptions);
-
-    public abstract Builder dnsSearch(List<String> dnsSearch);
-
-    public abstract Builder dnsSearch(String... dnsSearch);
-
-    public abstract Builder extraHosts(List<String> extraHosts);
-
-    public abstract Builder extraHosts(String... extraHosts);
-
-    public abstract Builder volumesFrom(List<String> volumesFrom);
-
-    public abstract Builder volumesFrom(String... volumesFrom);
-
-    public abstract Builder capAdd(List<String> capAdd);
-
-    public abstract Builder capAdd(String... capAdd);
-
-    public abstract Builder capDrop(List<String> capDrop);
-
-    public abstract Builder capDrop(String... capDrop);
-
-    public abstract Builder networkMode(String networkMode);
-
-    public abstract Builder securityOpt(List<String> securityOpt);
-
-    public abstract Builder securityOpt(String... securityOpt);
-
-    public abstract Builder devices(List<Device> devices);
-
-    public abstract Builder devices(Device... devices);
-
-    public abstract Builder memory(Long memory);
-
-    public abstract Builder memorySwap(Long memorySwap);
-
-    public abstract Builder memorySwappiness(Integer memorySwappiness);
-
-    public abstract Builder memoryReservation(Long memoryReservation);
-
-    public abstract Builder nanoCpus(Long nanoCpus);
-
-    public abstract Builder cpuPeriod(Long cpuPeriod);
-
-    public abstract Builder cpuShares(Long cpuShares);
-
-    public abstract Builder cpusetCpus(String cpusetCpus);
-
-    public abstract Builder cpusetMems(String cpusetMems);
-
-    public abstract Builder cpuQuota(Long cpuQuota);
-
-    public abstract Builder cgroupParent(String cgroupParent);
-
-    public abstract Builder restartPolicy(RestartPolicy restartPolicy);
-
-    public abstract Builder logConfig(LogConfig logConfig);
-
-    public abstract Builder ipcMode(String ipcMode);
-
-    public abstract Builder ulimits(List<Ulimit> ulimits);
-
-    public abstract Builder pidMode(String pidMode);
-
-    /**
-     * Set the PID (Process) Namespace mode for the container.
-     * Use this method to join another container's PID namespace. To use the host
-     * PID namespace, use {@link #hostPidMode()}.
-     *
-     * @param container Join the namespace of this container (Name or ID)
-     * @return Builder
-     */
-    public Builder containerPidMode(final String container) {
-      pidMode("container:" + container);
+    public Builder containerIDFile(final String containerIDFile) {
+      this.containerIDFile = containerIDFile;
       return this;
     }
 
-    /**
-     * Set the PID (Process) Namespace mode for the container.
-     * Use this method to use the host's PID namespace. To use another container's
-     * PID namespace, use {@link #containerPidMode(String)}.
-     *
-     * @return {@link Builder}
-     */
-    public Builder hostPidMode() {
-      pidMode("host");
+    public String containerIDFile() {
+      return containerIDFile;
+    }
+
+    public Builder lxcConf(final List<LxcConfParameter> lxcConf) {
+      if (lxcConf != null && !lxcConf.isEmpty()) {
+        this.lxcConf = ImmutableList.copyOf(lxcConf);
+      }
       return this;
     }
 
-    public abstract Builder shmSize(Long shmSize);
+    public Builder lxcConf(final LxcConfParameter... lxcConf) {
+      if (lxcConf != null && lxcConf.length > 0) {
+        this.lxcConf = ImmutableList.copyOf(lxcConf);
+      }
 
-    public abstract Builder oomKillDisable(Boolean oomKillDisable);
+      return this;
+    }
 
-    public abstract Builder oomScoreAdj(Integer oomScoreAdj);
+    public List<LxcConfParameter> lxcConf() {
+      return lxcConf;
+    }
 
-    /**
-     * Only works for Docker API version &gt;= 1.25.
-     * @param autoRemove Whether to automatically remove the container when it exits
-     * @return {@link Builder}
-     */
-    public abstract Builder autoRemove(Boolean autoRemove);
+    public Builder privileged(final Boolean privileged) {
+      this.privileged = privileged;
+      return this;
+    }
 
-    public abstract Builder pidsLimit(Integer pidsLimit);
+    public Boolean privileged() {
+      return privileged;
+    }
 
-    public abstract Builder tmpfs(Map<String, String> tmpfs);
+    public Builder portBindings(final Map<String, List<PortBinding>> portBindings) {
+      if (portBindings != null && !portBindings.isEmpty()) {
+        this.portBindings = Maps.newHashMap(portBindings);
+      }
+      return this;
+    }
 
-    public abstract Builder readonlyRootfs(Boolean readonlyRootfs);
-    
-    public abstract Builder storageOpt(Map<String, String> tmpfs);
+    public Map<String, List<PortBinding>> portBindings() {
+      return portBindings;
+    }
 
-    // Validation of property values using AutoValue requires we split the build method into two.
-    // AutoValue implements this package-private method.
-    // See https://github.com/google/auto/blob/master/value/userguide/builders-howto.md#validate.
-    abstract HostConfig autoBuild();
+    public Builder links(final List<String> links) {
+      if (links != null && !links.isEmpty()) {
+        this.links = ImmutableList.copyOf(links);
+      }
+
+      return this;
+    }
+
+    public Builder links(final String... links) {
+      if (links != null && links.length > 0) {
+        this.links = ImmutableList.copyOf(links);
+      }
+
+      return this;
+    }
+
+    public List<String> links() {
+      return links;
+    }
+
+    public Builder publishAllPorts(final Boolean publishAllPorts) {
+      this.publishAllPorts = publishAllPorts;
+      return this;
+    }
+
+    public Boolean publishAllPorts() {
+      return publishAllPorts;
+    }
+
+    public Builder dns(final List<String> dns) {
+      if (dns != null && !dns.isEmpty()) {
+        this.dns = ImmutableList.copyOf(dns);
+      }
+
+      return this;
+    }
+
+    public Builder dns(final String... dns) {
+      if (dns != null && dns.length > 0) {
+        this.dns = ImmutableList.copyOf(dns);
+      }
+
+      return this;
+    }
+
+    public List<String> dns() {
+      return dns;
+    }
+
+    public Builder dnsSearch(final List<String> dnsSearch) {
+      if (dnsSearch != null && !dnsSearch.isEmpty()) {
+        this.dnsSearch = ImmutableList.copyOf(dnsSearch);
+      }
+
+      return this;
+    }
+
+    public Builder dnsSearch(final String... dnsSearch) {
+      if (dnsSearch != null && dnsSearch.length > 0) {
+        this.dnsSearch = ImmutableList.copyOf(dnsSearch);
+      }
+
+      return this;
+    }
+
+    public List<String> dnsSearch() {
+      return dnsSearch;
+    }
+
+    public Builder extraHosts(final List<String> extraHosts) {
+      if (extraHosts != null && !extraHosts.isEmpty()) {
+        this.extraHosts = ImmutableList.copyOf(extraHosts);
+      }
+
+      return this;
+    }
+
+    public Builder extraHosts(final String... extraHosts) {
+      if (extraHosts != null && extraHosts.length > 0) {
+        this.extraHosts = ImmutableList.copyOf(extraHosts);
+      }
+
+      return this;
+    }
+
+    public List<String> extraHosts() {
+      return extraHosts;
+    }
+
+    public Builder volumesFrom(final List<String> volumesFrom) {
+      if (volumesFrom != null && !volumesFrom.isEmpty()) {
+        this.volumesFrom = ImmutableList.copyOf(volumesFrom);
+      }
+
+      return this;
+    }
+
+    public Builder volumesFrom(final String... volumesFrom) {
+      if (volumesFrom != null && volumesFrom.length > 0) {
+        this.volumesFrom = ImmutableList.copyOf(volumesFrom);
+      }
+
+      return this;
+    }
+
+    public List<String> volumesFrom() {
+      return volumesFrom;
+    }
+
+    public Builder capAdd(final List<String> capAdd) {
+      if (capAdd != null && !capAdd.isEmpty()) {
+        this.capAdd = ImmutableList.copyOf(capAdd);
+      }
+
+      return this;
+    }
+
+    public Builder capAdd(final String... capAdd) {
+      if (capAdd != null && capAdd.length > 0) {
+        this.capAdd = ImmutableList.copyOf(capAdd);
+      }
+
+      return this;
+    }
+
+    public List<String> capAdd() {
+      return capAdd;
+    }
+
+    public Builder capDrop(final List<String> capDrop) {
+      if (capDrop != null && !capDrop.isEmpty()) {
+        this.capDrop = ImmutableList.copyOf(capDrop);
+      }
+
+      return this;
+    }
+
+    public Builder capDrop(final String... capDrop) {
+      if (capDrop != null && capDrop.length > 0) {
+        this.capDrop = ImmutableList.copyOf(capDrop);
+      }
+
+      return this;
+    }
+
+    public List<String> capDrop() {
+      return capDrop;
+    }
+
+    public Builder networkMode(final String networkMode) {
+      this.networkMode = networkMode;
+      return this;
+    }
+
+    public String networkMode() {
+      return networkMode;
+    }
+
+    public Builder securityOpt(final List<String> securityOpt) {
+      if (securityOpt != null && !securityOpt.isEmpty()) {
+        this.securityOpt = ImmutableList.copyOf(securityOpt);
+      }
+
+      return this;
+    }
+
+    public Builder securityOpt(final String... securityOpt) {
+      if (securityOpt != null && securityOpt.length > 0) {
+        this.securityOpt = ImmutableList.copyOf(securityOpt);
+      }
+
+      return this;
+    }
+
+    public List<String> securityOpt() {
+      return securityOpt;
+    }
+
+    public Builder devices(final List<Device> devices) {
+      if (devices != null && !devices.isEmpty()) {
+        this.devices = ImmutableList.copyOf(devices);
+      }
+      return this;
+    }
+
+    public Builder devices(final Device... devices) {
+      if (devices != null && devices.length > 0) {
+        this.devices = ImmutableList.copyOf(devices);
+      }
+
+      return this;
+    }
+
+    public List<Device> devices() {
+      return devices;
+    }
+
+    public Builder ulimits(final List<Ulimit> ulimits) {
+      if (ulimits != null && !ulimits.isEmpty()) {
+        this.ulimits = ImmutableList.copyOf(ulimits);
+      }
+      return this;
+    }
+
+    public Builder ulimits(final Ulimit... ulmits) {
+      if (ulmits != null && ulmits.length > 0) {
+        this.ulimits = ImmutableList.copyOf(ulmits);
+      }
+
+      return this;
+    }
+
+    public List<Ulimit> ulimits() {
+      return ulimits;
+    }
+
+    public Builder memory(final Long memory) {
+      this.memory = memory;
+      return this;
+    }
+
+    public Long memory() {
+      return memory;
+    }
+
+    public Builder memorySwap(final Long memorySwap) {
+      this.memorySwap = memorySwap;
+      return this;
+    }
+
+    public Long memorySwap() {
+      return memorySwap;
+    }
+
+    public Builder cpuShares(final Long cpuShares) {
+      this.cpuShares = cpuShares;
+      return this;
+    }
+
+    public Long cpuShares() {
+      return cpuShares;
+    }
+
+    public Builder cpusetCpus(final String cpusetCpus) {
+      this.cpusetCpus = cpusetCpus;
+      return this;
+    }
+
+    public String cpusetCpus() {
+      return cpusetCpus;
+    }
+
+    public Builder cpuQuota(final Long cpuQuota) {
+      this.cpuQuota = cpuQuota;
+      return this;
+    }
+
+    public Long cpuQuota() {
+      return cpuQuota;
+    }
+
+    public Builder cgroupParent(final String cgroupParent) {
+      this.cgroupParent = cgroupParent;
+      return this;
+    }
+
+    public String cgroupParent() {
+      return cgroupParent;
+    }
+
+    public Builder restartPolicy(final RestartPolicy restartPolicy) {
+      this.restartPolicy = restartPolicy;
+      return this;
+    }
+
+    public Builder logConfig(final LogConfig logConfig) {
+      this.logConfig = logConfig;
+      return this;
+    }
+
+    public RestartPolicy restartPolicy() {
+      return restartPolicy;
+    }
+
+    public LogConfig logConfig() {
+      return logConfig;
+    }
+
+    public Builder ipcMode(final String ipcMode) {
+      this.ipcMode = ipcMode;
+      return this;
+    }
+
+    public String ipcMode() {
+      return ipcMode;
+    }
 
     public HostConfig build() {
-      final HostConfig hostConfig = autoBuild();
-      validateExtraHosts(hostConfig.extraHosts());
-      return hostConfig;
+      return new HostConfig(this);
     }
   }
 
-  private static void validateExtraHosts(final List<String> extraHosts) {
-    if (extraHosts != null) {
-      for (final String extraHost : extraHosts) {
-        checkArgument(extraHost.contains(":"),
-            "extra host arg '%s' must contain a ':'", extraHost);
-      }
+  public static class Bind {
+    private String to;
+    private String from;
+    private Boolean readOnly;
+
+    private Bind(final Builder builder) {
+      this.to = builder.to;
+      this.from = builder.from;
+      this.readOnly = builder.readOnly;
     }
-  }
-
-  @AutoValue
-  public abstract static class Bind {
-
-    public abstract String to();
 
     public static BuilderTo to(final String to) {
-      return BuilderTo.create(to);
+      return new BuilderTo(to);
     }
-
-    public abstract String from();
 
     public static BuilderFrom from(final String from) {
-      return BuilderFrom.create(from);
+      return new BuilderFrom(from);
     }
 
-    public static BuilderFrom from(final Volume volumeFrom) {
-      return BuilderFrom.create(volumeFrom);
-    }
-
-    public abstract Boolean readOnly();
-
-    @Nullable
-    public abstract Boolean noCopy();
-
-    @Nullable
-    public abstract Boolean selinuxLabeling();
-
-    public static Builder builder() {
-      return new AutoValue_HostConfig_Bind.Builder().readOnly(false);
-    }
-
-    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public String toString() {
-      if (isNullOrEmpty(to())) {
+      if (to == null || to.equals("")) {
         return "";
-      } else if (isNullOrEmpty(from())) {
-        return to();
+      } else if (from == null || from.equals("")) {
+        return to;
+      } else if (readOnly == null || !readOnly) {
+        return from + ":" + to;
+      } else {
+        return from + ":" + to + ":ro";
       }
-
-      final String bind = from() + ":" + to();
-
-      final List<String> options = new ArrayList<>();
-      if (readOnly()) {
-        options.add("ro");
-      }
-      //noinspection ConstantConditions
-      if (noCopy() != null && noCopy()) {
-        options.add("nocopy");
-      }
-
-      if (selinuxLabeling() != null) {
-        // shared
-        if (Boolean.TRUE.equals(selinuxLabeling())) {
-          options.add("z");
-        } else {
-          options.add("Z");
-        }
-      }
-
-      final String optionsValue = Joiner.on(',').join(options);
-
-      return (optionsValue.isEmpty()) ? bind : bind + ":" + optionsValue;
     }
 
-    @AutoValue
-    public abstract static class BuilderTo {
+    public static class BuilderTo {
+      private String to;
 
-      public abstract String to();
-
-      public static BuilderTo create(final String to) {
-        return new AutoValue_HostConfig_Bind_BuilderTo(to);
+      public BuilderTo(final String to) {
+        this.to = to;
       }
 
       public Builder from(final String from) {
-        return builder().to(to()).from(from);
-      }
-
-      public Builder from(final Volume volumeFrom) {
-        return builder().to(to()).from(volumeFrom);
+        return new Builder(this, from);
       }
     }
 
-    @AutoValue
-    public abstract static class BuilderFrom {
+    public static class BuilderFrom {
+      private String from;
 
-      public abstract String from();
-
-      public static BuilderFrom create(final String from) {
-        return new AutoValue_HostConfig_Bind_BuilderFrom(from);
+      public BuilderFrom(final String from) {
+        this.from = from;
       }
 
-      public static BuilderFrom create(final Volume volumeFrom) {
-        return new AutoValue_HostConfig_Bind_BuilderFrom(
-            checkNotNull(volumeFrom.name(), "Volume name"));
+      public Bind.Builder to(final String to) {
+        return new Builder(this, to);
+      }
+    }
+
+    public static class Builder {
+      private String to;
+      private String from;
+      private Boolean readOnly = false;
+
+      private Builder() {}
+
+      private Builder(final BuilderTo toBuilder, final String from) {
+        this.to = toBuilder.to;
+        this.from = from;
+      }
+
+      private Builder(final BuilderFrom fromBuilder, final String to) {
+        this.to = to;
+        this.from = fromBuilder.from;
       }
 
       public Builder to(final String to) {
-        return builder().to(to).from(from());
-      }
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-      public abstract Builder to(String to);
-
-      public abstract Builder from(String from);
-
-      public Builder from(final Volume volumeFrom) {
-        from(checkNotNull(volumeFrom.name(), "Volume name"));
+        this.to = to;
         return this;
       }
 
-      public abstract Builder readOnly(Boolean readOnly);
+      public String to() {
+        return to;
+      }
 
-      public abstract Builder noCopy(Boolean noCopy);
+      public Builder from(final String from) {
+        this.from = from;
+        return this;
+      }
 
-      /**
-       * Turn on automatic SELinux labeling of the host file or directory being
-       * mounted into the container.
-       * @param sharedContent True if this bind mount content is shared among multiple 
-       *     containers (mount option "z"); false if private and unshared (mount option "Z")
-       * @return {@link Builder}
-       */
-      public abstract Builder selinuxLabeling(Boolean sharedContent);
+      public String from() {
+        return from;
+      }
 
-      public abstract Bind build();
-    }
-  }
+      public Builder readOnly(final Boolean readOnly) {
+        this.readOnly = readOnly;
+        return this;
+      }
 
-  @AutoValue
-  public abstract static class Ulimit {
+      public Boolean readOnly() {
+        return readOnly;
+      }
 
-    @JsonProperty("Name")
-    public abstract String name();
-
-    @JsonProperty("Soft")
-    public abstract Long soft();
-
-    @JsonProperty("Hard")
-    public abstract Long hard();
-
-    public static Builder builder() {
-      return new AutoValue_HostConfig_Ulimit.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-      public abstract Builder name(String name);
-
-      public abstract Builder soft(Long soft);
-
-      public abstract Builder hard(Long hard);
-
-      public abstract Ulimit build();
-    }
-
-    @JsonCreator
-    public static Ulimit create(
-        @JsonProperty("Name") final String name,
-        @JsonProperty("Soft") final Long soft,
-        @JsonProperty("Hard") final Long hard) {
-      return builder()
-          .name(name)
-          .soft(soft)
-          .hard(hard)
-          .build();
-    }
-  }
-
-  @AutoValue
-  public abstract static class BlkioWeightDevice {
-
-    @JsonProperty("Path")
-    public abstract String path();
-
-    @JsonProperty("Weight")
-    public abstract Integer weight();
-
-    public static Builder builder() {
-      return new AutoValue_HostConfig_BlkioWeightDevice.Builder();
-    }
-
-    @JsonCreator
-    static BlkioWeightDevice create(
-        @JsonProperty("Path") final String path,
-        @JsonProperty("Weight") final Integer weight) {
-      return builder().path(path).weight(weight).build();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-      public abstract Builder path(final String path);
-
-      public abstract Builder weight(final Integer weight);
-
-      public abstract BlkioWeightDevice build();
-    }
-  }
-
-  @AutoValue
-  public abstract static class BlkioDeviceRate {
-
-    @JsonProperty("Path")
-    public abstract String path();
-
-    @JsonProperty("Rate")
-    public abstract Integer rate();
-
-    @JsonCreator
-    static BlkioDeviceRate create(
-        @JsonProperty("Path") final String path,
-        @JsonProperty("Rate") final Integer rate) {
-      return builder().path(path).rate(rate).build();
-    }
-
-    public static Builder builder() {
-      return new AutoValue_HostConfig_BlkioDeviceRate.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-      public abstract Builder path(final String path);
-
-      public abstract Builder rate(final Integer rate);
-
-      public abstract BlkioDeviceRate build();
+      public Bind build() {
+        return new Bind(this);
+      }
     }
   }
 }
